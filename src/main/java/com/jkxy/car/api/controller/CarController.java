@@ -4,10 +4,10 @@ import com.jkxy.car.api.pojo.Car;
 import com.jkxy.car.api.service.CarService;
 import com.jkxy.car.api.utils.JSONResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 
 
 @RestController
@@ -25,6 +25,29 @@ public class CarController {
     public JSONResult findAll() {
         List<Car> cars = carService.findAll();
         return JSONResult.ok(cars);
+    }
+
+    /**
+     * 根据id购买车辆，加锁控制超卖问题
+     * @param id
+     * @return
+     */
+    @GetMapping("buy/{id}")
+    public synchronized JSONResult buy(@PathVariable int id) {
+        try {
+            //根据id获取车辆库存
+            Car car = carService.findById(id);
+            //库存不足
+            if (car.getStock() < 1) {
+                return JSONResult.errorMsg("无库存");
+            }
+            //扣减库存并更新
+            car.setStock(car.getStock() - 1);
+            carService.updateById(car);
+            return JSONResult.ok(car);
+        } catch (Exception e) {
+            return JSONResult.errorMsg("购买失败！" + e);
+        }
     }
 
     /**
