@@ -25,8 +25,8 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<Car> findByCarName(String carName) {
-        return carDao.findByCarName(carName);
+    public List<Car> findByCarName(String carName,int start,int end) {
+        return carDao.findByCarName(carName,start,end);
     }
 
     @Override

@@ -68,9 +68,9 @@ public class CarController {
      * @param carName
      * @return
      */
-    @GetMapping("findByCarName/{carName}")
-    public JSONResult findByCarName(@PathVariable String carName) {
-        List<Car> cars = carService.findByCarName(carName);
+    @GetMapping("findByCarName/{carName}/{start}/{end}")
+    public JSONResult findByCarName(@PathVariable String carName,@PathVariable int start,@PathVariable int end) {
+        List<Car> cars = carService.findByCarName(carName,start,end);
         return JSONResult.ok(cars);
     }
 
